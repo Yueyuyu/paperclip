@@ -64,4 +64,13 @@ docker compose --env-file /path/outside/repo/runtime.env -f docker/compose.perso
 
 本文件和 compose 是可审阅的迁移准备，不是已完成恢复或运行验证的证明。
 
+## 2026-11-01 验证记录
+
+- UI 类型检查和生产构建通过；177 项语言、任务状态、监控、负责人及相关组件回归测试通过。
+- 真实浏览器已看到中文导航、任务状态与审核属性。新前端临时连接旧版服务器时，部分任务历史接口不兼容；此预览不能作为新版服务器迁移验收。
+- 全仓类型检查遇到 Runner 的 Grok release attestation 摘要不匹配；全仓构建遇到 PRP manifest 校验不匹配。Windows 检出换行与生成资产是待核对因素，未改写这些生成文件来消除校验。
+- Windows 全仓测试入口报 `spawnSync pnpm ENOENT`；源码安装的 postinstall 报目录符号链接 `EPERM`。需要在 Linux 检出后重新验证。
+- token gates 报上游已有样式与测试 fixture 违规；本次未增加颜色或尺寸字面量。
+- Docker 安装、数据库恢复及生产入口切换仍等待 WSL 启用所需的 Windows 重启。以上未完成项不能视为已通过。
+
 参考：[Docker 官方 Ubuntu 安装](https://docs.docker.com/engine/install/ubuntu/)、[微软 WSL 安装](https://learn.microsoft.com/en-us/windows/wsl/install)、[GitHub 同步 fork API](https://docs.github.com/en/rest/branches/branches#sync-a-fork-branch-with-the-upstream-repository)。
