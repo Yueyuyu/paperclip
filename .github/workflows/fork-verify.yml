@@ -1,0 +1,65 @@
+name: Fork - verify custom build
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: 'Optional same-repository master-to-main PR number'
+        required: false
+        type: string
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fork-verify-${{ github.event.pull_request.number || inputs.pull_request || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.repository == 'Yueyuyu/paperclip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check the requested upstream merge
+        if: inputs.pull_request != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pull_request }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" > /tmp/fork-sync-pr.json
+          jq -e --arg repo "$GITHUB_REPOSITORY" '.state == "open" and .base.ref == "main" and .head.ref == "master" and .head.repo.full_name == $repo' /tmp/fork-sync-pr.json
+          git fetch origin "refs/pull/$PR_NUMBER/merge"
+          git checkout --detach FETCH_HEAD
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - name: Check Chinese copy drift
+        run: node scripts/fork-ui-copy.mjs --check
+      - name: Build UI dependencies
+        run: pnpm --filter @paperclipai/plugin-sdk build
+      - name: Typecheck UI
+        run: pnpm --filter @paperclipai/ui typecheck
+      - name: Run UI regression tests
+        run: pnpm --filter @paperclipai/ui exec vitest run --maxWorkers=2
+      - name: Build UI
+        run: pnpm --filter @paperclipai/ui build
+      - name: Record scope
+        if: always()
+        run: echo 'This check covers the custom UI. It does not deploy Paperclip, migrate data, approve tasks, or replace full upstream release qualification.' >> "$GITHUB_STEP_SUMMARY"

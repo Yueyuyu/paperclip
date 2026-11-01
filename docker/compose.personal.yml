@@ -1,0 +1,54 @@
+# Linux / WSL2 only. Runtime files must live OUTSIDE the Git checkout.
+# Test on 3111 first. Switch to 3100 only after the migration acceptance checks.
+name: paperclip-personal
+services:
+  database:
+    image: postgres:17
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: paperclip
+      POSTGRES_DB: paperclip
+      POSTGRES_PASSWORD: ${PAPERCLIP_DB_PASSWORD:?Set a private database password in the external env file}
+    command: [postgres, -p, '54330', -c, listen_addresses=127.0.0.1]
+    volumes:
+      - ${PAPERCLIP_RUNTIME_ROOT:?Set an absolute Linux path outside the repository}/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -h 127.0.0.1 -p 54330 -U paperclip -d paperclip']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  paperclip:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: production
+      args:
+        PAPERCLIP_BUILD_COMMIT: ${PAPERCLIP_BUILD_COMMIT:?Use the full tested Git commit}
+    image: paperclip-personal:${PAPERCLIP_BUILD_COMMIT}
+    # local_trusted rejects non-loopback listeners. Host networking here is
+    # the WSL Linux host; it does not publish the app on every host interface.
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      HOST: 127.0.0.1
+      PORT: ${PAPERCLIP_PORT:-3111}
+      PAPERCLIP_HOME: /paperclip
+      PAPERCLIP_CONFIG: /paperclip/instances/default/config.json
+      PAPERCLIP_INSTANCE_ID: default
+      PAPERCLIP_DEPLOYMENT_MODE: local_trusted
+      PAPERCLIP_DEPLOYMENT_EXPOSURE: private
+      DATABASE_URL: postgresql://paperclip:${PAPERCLIP_DB_PASSWORD}@127.0.0.1:54330/paperclip
+      SERVE_UI: 'true'
+    volumes:
+      - ${PAPERCLIP_RUNTIME_ROOT}/instance:/paperclip
+      - ${PAPERCLIP_RUNTIME_ROOT}/pilot:/workspaces/pilot
+    healthcheck:
+      test: [CMD-SHELL, 'node -e "fetch(\"http://127.0.0.1:\"+process.env.PORT+\"/api/health\").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"']
+      interval: 15s
+      timeout: 10s
+      start_period: 90s
+      retries: 8
