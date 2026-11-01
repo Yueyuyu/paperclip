@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { i18n } from "@/i18n";
 import { twMerge } from "tailwind-merge";
 import { deriveAgentUrlKey, deriveProjectUrlKey, normalizeProjectUrlKey, hasNonAsciiContent } from "@paperclipai/shared";
 import type { BillingType, FinanceDirection, FinanceEventKind } from "@paperclipai/shared";
@@ -56,7 +57,7 @@ export function formatProjectBudget(budget: { amountCents: number; windowKind: s
 }
 
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("en-US", {
+  return new Date(date).toLocaleDateString(i18n.language === "zh-CN" ? "zh-CN" : "en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -67,7 +68,7 @@ export function formatDateTime(
   date: Date | string,
   options: { includeSeconds?: boolean; includeYear?: boolean } = {},
 ): string {
-  return new Date(date).toLocaleString("en-US", {
+  return new Date(date).toLocaleString(i18n.language === "zh-CN" ? "zh-CN" : "en-US", {
     month: "short",
     day: "numeric",
     ...(options.includeYear === false ? {} : { year: "numeric" as const }),
@@ -78,7 +79,7 @@ export function formatDateTime(
 }
 
 export function formatShortDate(date: Date | string): string {
-  return new Date(date).toLocaleString("en-US", {
+  return new Date(date).toLocaleString(i18n.language === "zh-CN" ? "zh-CN" : "en-US", {
     month: "short",
     day: "numeric",
   });
@@ -88,6 +89,14 @@ export function relativeTime(date: Date | string): string {
   const now = Date.now();
   const then = new Date(date).getTime();
   const diffSec = Math.round((now - then) / 1000);
+  if (i18n.language === "zh-CN") {
+    if (diffSec < 60) return "刚刚";
+    const formatter = new Intl.RelativeTimeFormat("zh-CN", { numeric: "auto" });
+    if (diffSec < 3600) return formatter.format(-Math.round(diffSec / 60), "minute");
+    if (diffSec < 86400) return formatter.format(-Math.round(diffSec / 3600), "hour");
+    if (diffSec < 2592000) return formatter.format(-Math.round(diffSec / 86400), "day");
+    return formatDate(date);
+  }
   if (diffSec < 60) return "just now";
   const diffMin = Math.round(diffSec / 60);
   if (diffMin < 60) return `${diffMin}m ago`;

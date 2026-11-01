@@ -1,3 +1,4 @@
+import { translateUi } from "@/i18n/ui-copy";
 import { useCurrentAccountGuard } from "@/hooks/useAccountBoundMutation";
 import { AgentAvatar } from "../AgentAvatar";
 import {
@@ -1263,7 +1264,7 @@ export function TaskChatComposer({
       {takeoverBusy ? (
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
       ) : null}
-      Skip
+      {translateUi("Skip")}
     </Button>
   ) : null;
 
@@ -1306,7 +1307,7 @@ export function TaskChatComposer({
             <div className="ml-auto flex shrink-0 items-center gap-1">
               {takeover.pendingCount > 1 ? (
                 <Button type="button" size="sm" variant="ghost" className="h-7 px-2" onClick={takeover.onShowNext}>
-                  {takeover.pendingCount} pending
+                  {takeover.pendingCount} {translateUi("pending")}
                 </Button>
               ) : null}
               <div ref={setTakeoverControlsSlot} className="flex shrink-0 items-center" data-testid="task-chat-composer-takeover-controls-slot" />
@@ -1341,7 +1342,7 @@ export function TaskChatComposer({
           className="flex h-11 min-w-0 items-center gap-2 px-2.5"
           data-testid="task-chat-composer-context"
           role="group"
-          aria-label="Task project and worktrees"
+          aria-label={translateUi("Task project and worktrees")}
         >
           {creation.contextBar}
         </TaskChatComposerBar>
@@ -1395,14 +1396,14 @@ export function TaskChatComposer({
             {pendingTakeover?.label ?? takeover?.label ?? "Pending input"}
           </span>
           <span className="shrink-0 font-medium">
-            {pendingTakeover?.count ?? takeover?.pendingCount ?? 1} pending
+            {pendingTakeover?.count ?? takeover?.pendingCount ?? 1} {translateUi("pending")}
           </span>
         </button>
       ) : null}
           {pause && conversationMode ? (
             <div className="space-y-2">
               <TaskChatPausedTakeover {...pause} hasDraft={Boolean(body.trim() || attachments.length)} />
-              <p className="text-xs text-muted-foreground">Send /new to start a fresh session and resume this conversation.</p>
+              <p className="text-xs text-muted-foreground">{translateUi("Send /new to start a fresh session and resume this conversation.")}</p>
             </div>
           ) : null}
           <div data-testid="task-chat-composer-input">
@@ -1419,7 +1420,7 @@ export function TaskChatComposer({
               mentions={mentions}
               actionCommands={creation ? [] : conversationMode ? [{
                 id: "action:new", kind: "action", command: "new", name: "New session",
-                description: "Start fresh context here, preserving conversation history.", aliases: ["new"],
+                description: translateUi("Start fresh context here, preserving conversation history."), aliases: ["new"],
                 disabled,
               }] : [goalCommandOption]}
               onSubmit={() => void submit()}
@@ -1481,7 +1482,7 @@ export function TaskChatComposer({
                       </AttachmentTitle>
                       <AttachmentDescription className="max-w-48">
                         {attachment.status === "uploading"
-                          ? "Uploading…"
+                          ? translateUi("Uploading…")
                           : attachment.status === "error"
                             ? (attachment.error ?? "Upload failed")
                             : [kind.label, sizeLabel]
@@ -1544,8 +1545,8 @@ export function TaskChatComposer({
             {queuedEdit ? (
               <span className="px-1 text-xs font-medium text-muted-foreground">
                 {queuedEdit.stale
-                  ? "Queued message changed"
-                  : "Editing queued message"}
+                  ? translateUi("Queued message changed")
+                  : translateUi("Editing queued message")}
               </span>
             ) : (
               <ComposerModeChip mode={pendingMode} onRemove={onWorkModeChange ? () => changeMode("standard") : undefined}
@@ -1583,11 +1584,11 @@ export function TaskChatComposer({
               <InlineEntitySelector
                 value={assigneeValue}
                 options={reassignOptions ?? []}
-                placeholder="Assignee"
-                mobileTitle="Select assignee"
+                placeholder={translateUi("Assignee")}
+                mobileTitle={translateUi("Select assignee")}
                 noneLabel="No assignee"
-                searchPlaceholder="Search assignees…"
-                emptyMessage="No matches."
+                searchPlaceholder={translateUi("Search assignees…")}
+                emptyMessage={translateUi("No matches.")}
                 onChange={updatePendingAssignee}
                 disabled={disabled}
                 triggerTestId="task-chat-composer-assignee"
@@ -1634,7 +1635,7 @@ export function TaskChatComposer({
                 disabled={submitting}
                 className="h-8 shrink-0 rounded-md px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-50"
               >
-                Cancel
+                {translateUi("Cancel")}
               </button>
             ) : null}
             <button
@@ -1655,27 +1656,27 @@ export function TaskChatComposer({
               title={
                 showStop
                   ? stopControl.stopping
-                    ? "Stopping…"
-                    : "Stop response"
+                    ? translateUi("Stopping…")
+                    : translateUi("Stop response")
                   : queuedEdit
                     ? queuedEdit.stale
-                      ? "Queue as new message"
-                      : "Save queued message"
+                      ? translateUi("Queue as new message")
+                      : translateUi("Save queued message")
                     : uploadPending
-                      ? "Waiting for upload to finish"
+                      ? translateUi("Waiting for upload to finish")
                       : uploadFailed
-                        ? "Remove the failed attachment to send"
-                        : creation ? `${creation.submitLabel} (⌘+Enter)` : "Send (⌘+Enter)"
+                        ? translateUi("Remove the failed attachment to send")
+                        : creation ? `${creation.submitLabel} (⌘+Enter)` : translateUi("Send (⌘+Enter)")
               }
               aria-label={
                 showStop
                   ? stopControl.stopping
-                    ? "Stopping…"
-                    : "Stop"
+                    ? translateUi("Stopping…")
+                    : translateUi("Stop")
                   : queuedEdit
                     ? queuedEdit.stale
-                      ? "Queue as new message"
-                      : "Save queued message"
+                      ? translateUi("Queue as new message")
+                      : translateUi("Save queued message")
                     : creation?.submitLabel ?? "Send"
               }
               aria-busy={submitting}

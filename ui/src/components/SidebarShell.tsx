@@ -1,3 +1,4 @@
+import { translateUi } from "@/i18n/ui-copy";
 import {
   useCallback,
   useEffect,
@@ -233,7 +234,7 @@ export function SidebarShell({
       {canResize ? (
         <div
           role="separator"
-          aria-label="Resize sidebar"
+          aria-label={translateUi("Resize sidebar")}
           aria-orientation="vertical"
           aria-valuemin={MIN_SIDEBAR_WIDTH}
           aria-valuemax={MAX_SIDEBAR_WIDTH}

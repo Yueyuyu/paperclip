@@ -1,3 +1,4 @@
+import { translateUi } from "@/i18n/ui-copy";
 import { CoordinatorSidebar } from "./CoordinatorSidebar";
 import { useCoordinatorWorkspaceEnabled } from "@/hooks/useCoordinatorWorkspaceEnabled";
 import {
@@ -160,19 +161,19 @@ function ClassicSidebar({ children }: { children?: ReactNode }) {
               <button
                 onClick={() => openNewIssue()}
                 data-slot="icon-button"
-                aria-label={rail ? "New Task" : undefined}
+                aria-label={rail ? translateUi("New Task") : undefined}
                 className={cn(
                   "flex items-center gap-2.5 mx-2 rounded-lg px-2 py-1.5 pointer-coarse:py-1 text-(length:--text-compact) font-medium text-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
                 <SquarePen className="h-4 w-4 shrink-0" />
-                <span className={rail ? SIDEBAR_RAIL_HIDDEN_LABEL : "truncate"}>New Task</span>
+                <span className={rail ? SIDEBAR_RAIL_HIDDEN_LABEL : "truncate"}>{translateUi("New Task")}</span>
               </button>
             );
             return rail ? (
               <Tooltip>
                 <TooltipTrigger asChild>{newTaskButton}</TooltipTrigger>
-                <TooltipContent side="right">New Task</TooltipContent>
+                <TooltipContent side="right">{translateUi("New Task")}</TooltipContent>
               </Tooltip>
             ) : (
               newTaskButton
@@ -182,72 +183,72 @@ function ClassicSidebar({ children }: { children?: ReactNode }) {
               width; a nav row also keeps search reachable from the
               collapsed rail, where the old header icon was dropped entirely.
               Cmd/Ctrl+K remains the keyboard path (command palette). */}
-          <SidebarNavItem to="/search" label="Search" icon={Search} />
-          <SidebarNavItem to="/dashboard" label="Dashboard" icon={LayoutDashboard} liveCount={liveRunCount} />
+          <SidebarNavItem to="/search" label={translateUi("Search")} icon={Search} />
+          <SidebarNavItem to="/dashboard" label={translateUi("Dashboard")} icon={LayoutDashboard} liveCount={liveRunCount} />
           {!combinedInboxTasks ? (
             <SidebarNavItem
               to="/inbox"
-              label="Inbox"
+              label={translateUi("Inbox")}
               icon={Inbox}
               badge={inboxBadge.inbox}
-              badgeLabel="unread"
+              badgeLabel={translateUi("unread")}
               badgeTone={inboxBadge.failedRuns > 0 ? "danger" : "default"}
               alert={inboxBadge.failedRuns > 0}
             />
           ) : null}
-          {agentChatEnabled && !chatRail ? <SidebarNavItem to="/chats" label="Chat" icon={MessageCircle} badge={unreadChatCount} badgeLabel="unread chats" /> : null}
+          {agentChatEnabled && !chatRail ? <SidebarNavItem to="/chats" label={translateUi("Chat")} icon={MessageCircle} badge={unreadChatCount} badgeLabel={translateUi("unread chats")} /> : null}
           {showDecisions ? (
             <SidebarNavItem
               to="/decisions"
-              label="Decisions"
+              label={translateUi("Decisions")}
               icon={ListChecks}
               badge={attentionCount}
-              badgeLabel="decisions"
+              badgeLabel={translateUi("decisions")}
             />
           ) : null}
           {showStatusCards ? (
-            <SidebarNavItem to="/status" label="Status" icon={LayoutGrid} textBadge="beta" />
+            <SidebarNavItem to="/status" label={translateUi("Status")} icon={LayoutGrid} textBadge={translateUi("beta")} />
           ) : null}
           {conferenceRoomChatEnabled ? (
-            <SidebarNavItem to="/board-chat" label="Conference Room" icon={MessagesSquare} />
+            <SidebarNavItem to="/board-chat" label={translateUi("Conference Room")} icon={MessagesSquare} />
           ) : null}
         </div>
 
-        <SidebarSection label="Work" collapsible={{ open: workOpen, onOpenChange: setWorkOpen }}>
+        <SidebarSection label={translateUi("Work")} collapsible={{ open: workOpen, onOpenChange: setWorkOpen }}>
           {/* Agent Chat: Chat leads the Work group as a single row — the
               agents you talk to live in the Chat surface's own secondary rail
               (ChatContextualSidebar), not in the primary nav. */}
           {chatRail ? (
-            <SidebarNavItem to="/chats" label="Chat" icon={MessageCircle} badge={unreadChatCount} badgeLabel="unread chats" />
+            <SidebarNavItem to="/chats" label={translateUi("Chat")} icon={MessageCircle} badge={unreadChatCount} badgeLabel={translateUi("unread chats")} />
           ) : null}
           {/* Combined Inbox + Task List: Inbox is a view inside Tasks, so the
               unread/failed-run badge rides on Tasks. */}
           {combinedInboxTasks ? (
             <SidebarNavItem
               to="/issues"
-              label="Tasks"
+              label={translateUi("Tasks")}
               icon={CircleCheck}
               badge={inboxBadge.inbox}
-              badgeLabel="unread"
+              badgeLabel={translateUi("unread")}
               badgeTone={inboxBadge.failedRuns > 0 ? "danger" : "default"}
               alert={inboxBadge.failedRuns > 0}
             />
           ) : (
-            <SidebarNavItem to="/issues" label="Tasks" icon={CircleCheck} />
+            <SidebarNavItem to="/issues" label={translateUi("Tasks")} icon={CircleCheck} />
           )}
           {streamlinedUiEnabled ? (
             <>
-              <SidebarNavItem to="/projects" label="Projects" icon={FolderOpen} />
+              <SidebarNavItem to="/projects" label={translateUi("Projects")} icon={FolderOpen} />
               <SidebarStarredProjects />
             </>
           ) : null}
-          <SidebarNavItem to="/routines" label="Routines" icon={Repeat} />
-          <SidebarNavItem to="/artifacts" label="Artifacts" icon={Package} />
+          <SidebarNavItem to="/routines" label={translateUi("Routines")} icon={Repeat} />
+          <SidebarNavItem to="/artifacts" label={translateUi("Artifacts")} icon={Package} />
           {showCases ? (
-            <SidebarNavItem to="/cases" label="Cases" icon={Layers} textBadge="beta" />
+            <SidebarNavItem to="/cases" label={translateUi("Cases")} icon={Layers} textBadge={translateUi("beta")} />
           ) : null}
           {showGoalsLink ? (
-            <SidebarNavItem to="/goals" label="Goals" icon={Target} />
+            <SidebarNavItem to="/goals" label={translateUi("Goals")} icon={Target} />
           ) : goalsLinkPending ? (
             <div
               data-testid="sidebar-goals-placeholder"
@@ -256,7 +257,7 @@ function ClassicSidebar({ children }: { children?: ReactNode }) {
             />
           ) : null}
           {showWorkspacesLink ? (
-            <SidebarNavItem to="/workspaces" label="Workspaces" icon={GitBranch} />
+            <SidebarNavItem to="/workspaces" label={translateUi("Workspaces")} icon={GitBranch} />
           ) : null}
           <PluginSlotOutlet
             slotTypes={["sidebar"]}
@@ -275,13 +276,13 @@ function ClassicSidebar({ children }: { children?: ReactNode }) {
 
         {streamlinedUiEnabled ? (
           <SidebarSection
-            label="Org"
+            label={translateUi("Org")}
             collapsible={{ open: organizationOpen, onOpenChange: setOrganizationOpen }}
           >
-            <SidebarNavItem to="/agents" label="Agents" icon={Users} />
-            <SidebarNavItem to="/skills" label="Skills" icon={Boxes} />
-            <SidebarNavItem to="/apps" label="Connectors" icon={Unplug} />
-            <SidebarNavItem to="/activity" label="Audit" icon={History} />
+            <SidebarNavItem to="/agents" label={translateUi("Agents")} icon={Users} />
+            <SidebarNavItem to="/skills" label={translateUi("Skills")} icon={Boxes} />
+            <SidebarNavItem to="/apps" label={translateUi("Connectors")} icon={Unplug} />
+            <SidebarNavItem to="/activity" label={translateUi("Audit")} icon={History} />
           </SidebarSection>
         ) : null}
 
@@ -294,16 +295,16 @@ function ClassicSidebar({ children }: { children?: ReactNode }) {
             <SidebarProjects />
             <SidebarAgents />
             <SidebarSection
-              label="Organization"
+              label={translateUi("Organization")}
               collapsible={{ open: organizationOpen, onOpenChange: setOrganizationOpen }}
             >
-              <SidebarNavItem to="/org" label="Org" icon={Network} />
-              <SidebarNavItem to="/apps" label="Connectors" icon={Unplug} />
-              <SidebarNavItem to="/timeline" label="Timeline" icon={GanttChartSquare} />
-              <SidebarNavItem to="/costs" label="Costs" icon={DollarSign} />
-              <SidebarNavItem to="/activity" label="Activity" icon={History} />
-              <SidebarNavItem to="/activity/commentary" label="Commentary" icon={History} />
-              <SidebarNavItem to="/company/settings" label="Settings" icon={Settings} />
+              <SidebarNavItem to="/org" label={translateUi("Org")} icon={Network} />
+              <SidebarNavItem to="/apps" label={translateUi("Connectors")} icon={Unplug} />
+              <SidebarNavItem to="/timeline" label={translateUi("Timeline")} icon={GanttChartSquare} />
+              <SidebarNavItem to="/costs" label={translateUi("Costs")} icon={DollarSign} />
+              <SidebarNavItem to="/activity" label={translateUi("Activity")} icon={History} />
+              <SidebarNavItem to="/activity/commentary" label={translateUi("Commentary")} icon={History} />
+              <SidebarNavItem to="/company/settings" label={translateUi("Settings")} icon={Settings} />
             </SidebarSection>
           </>
         )}

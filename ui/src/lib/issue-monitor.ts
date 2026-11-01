@@ -1,3 +1,4 @@
+import { i18n } from "@/i18n";
 import { useEffect, useState } from "react";
 import { PROVIDER_QUOTA_MONITOR_SERVICE_NAME } from "@paperclipai/shared";
 
@@ -135,7 +136,7 @@ export function formatMonitorAbsolute(
   const targetYmd = zonedYmd(target, options.locale, options.timeZone);
   const referenceYmd = zonedYmd(reference, options.locale, options.timeZone);
 
-  const time = new Intl.DateTimeFormat(options.locale, {
+  const time = new Intl.DateTimeFormat(options.locale ?? (i18n.language === "zh-CN" ? "zh-CN" : "en-US"), {
     hour: "numeric",
     minute: "2-digit",
     timeZone: options.timeZone,
@@ -145,13 +146,13 @@ export function formatMonitorAbsolute(
     targetYmd.year === referenceYmd.year &&
     targetYmd.month === referenceYmd.month &&
     targetYmd.day === referenceYmd.day;
-  if (isToday) return `Today, ${time}`;
+  if (isToday) return `${(options.locale ?? i18n.language) === "zh-CN" ? "今天" : "Today"}, ${time}`;
 
-  const weekday = new Intl.DateTimeFormat(options.locale, {
+  const weekday = new Intl.DateTimeFormat(options.locale ?? (i18n.language === "zh-CN" ? "zh-CN" : "en-US"), {
     weekday: "short",
     timeZone: options.timeZone,
   }).format(target);
-  const date = new Intl.DateTimeFormat(options.locale, {
+  const date = new Intl.DateTimeFormat(options.locale ?? (i18n.language === "zh-CN" ? "zh-CN" : "en-US"), {
     month: "short",
     day: "numeric",
     year: targetYmd.year === referenceYmd.year ? undefined : "numeric",
@@ -166,14 +167,14 @@ export function formatMonitorAbsoluteFull(
   options: MonitorDateTimeFormatOptions = {},
 ): string {
   const date = new Date(toTimestamp(nextCheckAt));
-  const datePart = new Intl.DateTimeFormat(options.locale, {
+  const datePart = new Intl.DateTimeFormat(options.locale ?? (i18n.language === "zh-CN" ? "zh-CN" : "en-US"), {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
     timeZone: options.timeZone,
   }).format(date);
-  const timePart = new Intl.DateTimeFormat(options.locale, {
+  const timePart = new Intl.DateTimeFormat(options.locale ?? (i18n.language === "zh-CN" ? "zh-CN" : "en-US"), {
     hour: "numeric",
     minute: "2-digit",
     second: "2-digit",

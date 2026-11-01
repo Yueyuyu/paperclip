@@ -1,3 +1,4 @@
+import { translateUi } from "@/i18n/ui-copy";
 import { useCoordinatorWorkspaceEnabled } from "./hooks/useCoordinatorWorkspaceEnabled";
 import { AgentChats } from "./pages/AgentChats";
 import { lazy, Suspense, useEffect, type ReactNode } from "react";
@@ -635,7 +636,7 @@ export function OnboardingRoutePage() {
                     : openOnboarding()
               }
             >
-              {matchedCompany ? "Add Agent" : "Start Onboarding"}
+              {matchedCompany ? translateUi("Add Agent") : translateUi("Start Onboarding")}
             </Button>
           )}
         </div>

@@ -1,3 +1,4 @@
+import { translateUi, statusDisplayName } from "@/i18n/ui-copy";
 import { AgentIdentity } from "@/components/AgentIdentity";
 import { memo, useMemo } from "react";
 import { Link } from "@/lib/router";
@@ -49,13 +50,13 @@ interface ActiveAgentsPanelProps {
 
 export function ActiveAgentsPanel({
   companyId,
-  title = "Agents",
+  title = translateUi("Agents"),
   minRunCount = MIN_DASHBOARD_RUNS,
   fetchLimit,
   cardLimit = DASHBOARD_RUN_CARD_LIMIT,
   gridClassName,
   cardClassName,
-  emptyMessage = "No recent agent runs.",
+  emptyMessage = translateUi("No recent agent runs."),
   queryScope = "dashboard",
   showMoreLink = true,
   showTranscripts = false,
@@ -160,7 +161,7 @@ export function ActiveAgentsPanel({
           <Link to="/dashboard/live" className="hover:text-foreground hover:underline">
             {hiddenRunCount > 0
               ? `${hiddenRunCount} more active/recent run${hiddenRunCount === 1 ? "" : "s"}`
-              : "View all runs"}
+              : translateUi("View all runs")}
           </Link>
         </div>
       )}
@@ -187,11 +188,11 @@ export const AgentRunCard = memo(function AgentRunCard({
   issueLoadFailed?: boolean;
   className?: string;
 }) {
-  const statusLabel = runStatusLabels[run.status] ?? run.status.replace(/[_-]/g, " ");
+  const statusLabel = statusDisplayName(run.status, runStatusLabels[run.status] ?? run.status.replace(/[_-]/g, " "));
   const runUrl = `/agents/${run.agentId}/runs/${run.id}`;
   const timestamp = run.finishedAt
-    ? `Finished ${relativeTime(run.finishedAt)}`
-    : run.startedAt ? `Started ${relativeTime(run.startedAt)}` : `Queued ${relativeTime(run.createdAt)}`;
+    ? translateUi("Finished {{time}}", { time: relativeTime(run.finishedAt) })
+    : run.startedAt ? translateUi("Started {{time}}", { time: relativeTime(run.startedAt) }) : translateUi("Queued {{time}}", { time: relativeTime(run.createdAt) });
   const taskStatus = issue?.status === "in_review" && issue.externalConversationState === "waiting" ? "idle" : issue?.status ?? "backlog";
   const taskTitle = issue?.title ?? (issueLoadFailed ? "Task unavailable" : "Loading task…");
 
@@ -236,7 +237,7 @@ export const AgentRunCard = memo(function AgentRunCard({
         ) : (
           <Link to={runUrl} className="flex items-center gap-1.5 rounded-lg border border-border/60 bg-background/60 px-2.5 py-2 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <Clock3 className="size-4 shrink-0" aria-hidden />
-            <span className="truncate">{run.invocationSource === "timer" ? "Scheduled heartbeat" : "No linked task"}</span>
+            <span className="truncate">{run.invocationSource === "timer" ? translateUi("Scheduled heartbeat") : translateUi("No linked task")}</span>
           </Link>
         )}
         <time
