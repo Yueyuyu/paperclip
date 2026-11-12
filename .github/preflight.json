@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "required": [
+    ".github/scripts/preflight.mjs",
+    ".github/scripts/preflight.checks.mjs",
+    ".githooks/pre-commit",
+    ".githooks/pre-push",
+    ".github/scripts/change-scope.test.mjs",
+    ".github/scripts/change-scope.mjs",
+    ".githooks/.gitattributes"
+  ],
+  "packageScripts": [
+    "package.json"
+  ],
+  "checks": [
+    [
+      "node",
+      "--test",
+      ".github/scripts/preflight.checks.mjs"
+    ],
+    [
+      "node",
+      "--test",
+      ".github/scripts/change-scope.test.mjs"
+    ]
+  ],
+  "programChecks": [
+    [
+      "pnpm",
+      "-r",
+      "typecheck"
+    ],
+    [
+      "pnpm",
+      "test:run"
+    ],
+    [
+      "pnpm",
+      "build"
+    ]
+  ],
+  "documentation": {
+    "rootMarkdown": true,
+    "files": [
+      "LICENSE",
+      ".github/CI.md",
+      ".github/pull_request_template.md"
+    ],
+    "markdownDirectories": [
+      "doc/"
+    ],
+    "runtimeDocuments": []
+  },
+  "generated": {},
+  "excludedWorkflows": {
+    ".github/workflows/agent-runtime-images.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/chat-feature-testops-retained-verification.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/chat-feature-testops.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/ci-incremental-qualification.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/ci-profile.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/ci-routing.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/ci-test-durations.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/ci-work-benchmark.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/cloud-migrator-artifacts.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/cloud-readiness.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/commitperclip-review.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/docker-runner-check.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/docker.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/e2e.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/pr-trusted.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/pr.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/refresh-lockfile.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/release-smoke.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/release-verify.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/release.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/runner-chaos-evals.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/runner-full-stack-e2e.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/runner-live-evals.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/runner-protocol-live-evals.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/runner-windows.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/sentry-contract.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/storybook-deploy.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收",
+    ".github/workflows/storybook-visual.yml": "上游工作流已停用；恢复启用前必须纳入检查及上游资格验收"
+  },
+  "workingDirectories": {
+    "package.json#dev": "server",
+    "package.json#dev:watch": "server",
+    "package.json#dev:once": "server",
+    "package.json#dev:list": "server",
+    "package.json#dev:stop": "server",
+    "package.json#prototype:dot": "server",
+    "package.json#prototype:dot:live": "server"
+  }
+}

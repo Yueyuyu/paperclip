@@ -267,3 +267,8 @@ A change is done when all are true:
 ## Design system
 
 `DESIGN.md` at the repo root is the source of truth for UI design decisions. The token-only rule applies to all `ui/` changes: every color, spacing, radius, type, shadow, and motion value in `ui/src/components/**` and `ui/src/pages/**` comes from the token layer in `ui/src/index.css` — no hex, raw px, arbitrary Tailwind bracket values, or raw `font-size`/`fontSize` declarations in components, outside the documented allowlist in `ui/src/index.css`. Run `pnpm check:token-gates` (`scripts/check-token-gates.mjs`) before committing UI changes — it fails on any violation not covered by that allowlist.
+
+
+## 提交与推送固定流程
+
+提交前先读 [.github/PREFLIGHT.md](.github/PREFLIGHT.md)，新检出先启用仓库 hooks。精确暂存、检查暂存 diff，运行 `node .github/scripts/preflight.mjs verify --staged`，通过后才提交和推送。检查脚本/工作流引用与漏提交，任何命令失败立即停止；验证记录绑定实际 Git 树，不借用工作目录或旧提交的通过结果。每次一个逻辑改动，其他任务的改动留在原处，必要时隔离工作树验证。发布资格检查仍遵循本项目原有要求。
