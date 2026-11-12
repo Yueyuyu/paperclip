@@ -20,8 +20,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  scope:
+    name: 变更范围与文档检查
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.scope.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node --test .github/scripts/change-scope.test.mjs
+      - id: scope
+        run: node .github/scripts/change-scope.mjs
   verify:
-    if: github.repository == 'Yueyuyu/paperclip'
+    needs: scope
+    if: github.repository == 'Yueyuyu/paperclip' && needs.scope.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
