@@ -8,9 +8,13 @@
 - `main`：个人定制和部署分支，默认使用简体中文。
 - `codex/*`：后续功能分支，从 `main` 创建，完成检查后合入 `main`。
 
-`Fork - sync upstream` 每天北京时间 05:17 运行，也可在 Actions 手动运行。GitHub 可能延迟定时任务。工作流更新镜像分支，并维护一个 `master → main` 草稿合并请求。它不会强制覆盖定制分支，也不会自动合并或部署。
+`Fork - sync upstream` 每天北京时间 05:17 运行，也可在 Actions 手动运行。GitHub 可能延迟定时任务。默认只读比较 main、master 与真正的上游：有差异时在任务摘要和 `fork-sync-status` 附件中明确显示 **待人工同步**。检测任务成功只代表检测完成，不代表源码已经同步。
 
-工作流显式触发 `Fork - verify custom build`，验证合并后的代码。自动创建的 PR 使用 `GITHUB_TOKEN`，不能依赖普通 PR 事件再次触发测试。测试失败或冲突时先处理再合并；不要使用 `reset --hard upstream/master` 更新定制分支。
+GitHub 内置令牌无权更新上游的工作流文件，不能依靠重试解决。未配置专用凭据时，使用具有工作流更新权限的个人凭据手动同步 master，再创建 `master → main` 草稿 PR、检查合并结果；不要直接覆盖 main。若有冲突先人工处理。
+
+以后需要恢复自动同步时，在本仓库 Actions Secrets 中配置 `FORK_SYNC_TOKEN`：使用仅授权此仓库的专用 PAT，授予 Contents、Workflows、Pull requests 的读写权限。凭据只存 GitHub Secret，不写进代码、日志或文档。检测到该 Secret 后，工作流才更新镜像并维护草稿 PR；不会强制覆盖、自动合并或部署。令牌失效、权限不足或网络失败仍正常报错。
+
+专用凭据创建或更新 PR 会触发 `Fork - verify custom build`，验证拟合并的代码，不再每天重复调度没有变化的 PR。必要时可手动运行此验证并填写 PR 编号。测试失败或冲突时先处理再合并；不要使用 `reset --hard upstream/master` 更新定制分支。
 
 源码同步、镜像构建、数据库升级和运行实例切换是四个独立步骤。网页不会因为 GitHub 上有新提交就自动升级。长期无活动的公开 fork 可能被 GitHub 暂停定时工作流，应在 Actions 中检查是否仍启用。
 

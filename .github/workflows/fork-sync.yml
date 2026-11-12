@@ -7,9 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+  contents: read
 
 concurrency:
   group: fork-sync-upstream
@@ -25,8 +23,21 @@ jobs:
         with:
           ref: main
           persist-credentials: false
-      - name: Update mirror and open a review request
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 验证同步边界
+        run: node --test scripts/fork-sync.test.mjs
+      - name: 检测更新，有专用凭据时同步镜像
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.FORK_SYNC_TOKEN || github.token }}
+          FORK_SYNC_CREDENTIAL_CONFIGURED: ${{ secrets.FORK_SYNC_TOKEN != '' }}
           GH_REPO: ${{ github.repository }}
         run: node scripts/fork-sync.mjs
+      - name: 保存明确的同步状态
+        uses: actions/upload-artifact@v4
+        with:
+          name: fork-sync-status
+          path: fork-sync-status.json
+          retention-days: 7
+          if-no-files-found: error
